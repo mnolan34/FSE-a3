@@ -1,10 +1,10 @@
 import axios from "axios";
 //This has been changed to BaseURL
-const BASE_URL = "https://fse-a2.herokuapp.com/api";
+const BASE_URL = "https://fse-a3.herokuapp.com/api";
 // const BASE_URL = "http://localhost:4000/api";
 
-//commented out due to A3
-//const LOGIN_API = `${BASE_URL}/login`;
+
+const LOGIN_API = `${BASE_URL}/login`;
 const USERS_API = `${BASE_URL}/users`;
 
 export const createUser = (user) =>
