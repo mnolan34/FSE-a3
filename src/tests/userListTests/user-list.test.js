@@ -1,10 +1,21 @@
-import {UserList} from "../components/profile/user-list";
+import {UserList} from "../../components/profile/user-list";
 import {screen, render} from "@testing-library/react";
 import {HashRouter} from "react-router-dom";
-import {findAllUsers} from "../services/users-service";
+import {findAllUsers} from "../../services/users-service";
 import axios from "axios";
 
-jest.mock('axios');
+//jest.mock('axios');
+
+//Above commented out, replaced with below
+
+const mock = jest.spyOn(axios, 'get');
+mock.mockImplementation(() =>
+    Promise.resolve({data: {users: MOCKED_USERS}}));
+
+mock.mockRestore();  // restore original implementation
+
+//Above was used from Piazza @279 To fix "then" async issue
+
 
 const MOCKED_USERS = [
   {username: 'ellen_ripley', password: 'lv426', email: 'repley@weyland.com', _id: "123"},
@@ -30,6 +41,10 @@ test('user list renders async', async () => {
   expect(linkElement).toBeInTheDocument();
 })
 
+
+//Below is commented out, because it was moved to a separate file
+
+/*
 test('user list renders mocked', async () => {
   axios.get.mockImplementation(() =>
     Promise.resolve({ data: {users: MOCKED_USERS} }));
@@ -45,3 +60,5 @@ test('user list renders mocked', async () => {
   const user = screen.getByText(/ellen_ripley/i);
   expect(user).toBeInTheDocument();
 });
+
+ */
