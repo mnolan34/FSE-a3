@@ -1,36 +1,47 @@
+/**
+ * @jest-environment node
+ */
 import {
-    createTuit, findTuitByUser,
+    createTuit, deleteTuitByText,
     findTuitById, deleteTuit,
-    findAllTuits, updateTuit
+    findAllTuits
 } from "../services/tuits-service";
+
+import {
+    createUser
+} from "../services/users-service";
+
+//create a fake User
+const dummyUser = {
+    username: 'TWRP',
+    password: 'lifeParty',
+    email: 'phobos@music.com'
+}
 
 
 describe('can create tuit with REST API', () => {
-  // Create a Fake User
-    const tennyson = {
-        username: 'alfred_tennyson',
-        password: 'ulysses',
-        email: 'tenny@poems.com'
-    };
+
     //Create Fake Tuit
-    const tennyTuit = {
-        tuit: 'Some work of noble note, may yet be done, not unbecoming men that strove with Gods.',
-        postedBy: tennyson.username
+    const mockTuit = {
+        tuit: 'Here is an example tuit!'
     };
 
+    //As mentioned in Piazza 307, create new tuit delete
     beforeAll(()=> {
-        return deleteTuit(tennyTuit);
+        return deleteTuitByText(mockTuit.tuit);
     });
-
     afterAll(()=>{
-        return deleteTuit(tennyTuit);
+        return deleteTuitByText(mockTuit.tuit);
     });
 
     test('can insert with REST API', async() => {
-        const newTuit = await createTuit(tennyTuit);
+        //insert dummyUser into Database
+        const newUser = await createUser(dummyUser);
+        //insert dummyTuit into Database
+        const newTuit = await createTuit(newUser._id, mockTuit.tuit);
 
-        expect(newTuit.tuit).toEqual('Some work of noble note, may yet be done, not unbecoming men that strove with Gods.');
-        expect(newTuit.postedBy).toEqual(tennyson);
+        expect(newTuit).toEqual(mockTuit);
+        //expect(newTuit.postedBy).toEqual(newUser._id);
     });
 
 });
