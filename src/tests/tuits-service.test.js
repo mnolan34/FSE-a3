@@ -8,63 +8,60 @@ import {
 } from "../services/tuits-service";
 
 import {
-    createUser
+    createUser, deleteUsersByUsername
 } from "../services/users-service";
 
 //create a fake User
 const dummyUser = {
-    username: 'TWRP',
-    password: 'lifeParty',
-    email: 'phobos@music.com'
+    username: 'Pringles',
+    password: 'chip123',
+    email: 'mustache@snacks.com'
 }
+
+//Create Fake Tuit
+const mockTuit = {
+    tuit: "Here is an example tuit!",
+    postedBy: ""
+};
+
+let newUser = "";
+let newTuit = "";
 
 
 describe('can create tuit with REST API', () => {
 
-    //Create Fake Tuit
-    const mockTuit = {
-        tuit: 'Here is an example tuit!'
-    };
-
     //As mentioned in Piazza 307, create new tuit delete
     beforeAll(()=> {
-        return deleteTuitByText(mockTuit.tuit);
+        newUser = createUser(dummyUser);
+        mockTuit.postedBy = newUser;
+        //deleteTuitByText(mockTuit.tuit);
+        return(newUser);
+
     });
     afterAll(()=>{
-        return deleteTuitByText(mockTuit.tuit);
+        return(deleteUsersByUsername('Pringles'));
+        //return deleteTuitByText(mockTuit.tuit);
     });
 
     test('can insert with REST API', async() => {
-        //insert dummyUser into Database
-        const newUser = await createUser(dummyUser);
         //insert dummyTuit into Database
-        const newTuit = await createTuit(newUser._id, mockTuit.tuit);
+        console.log(mockTuit);
+        newTuit = await createTuit(mockTuit.postedBy, mockTuit);
+        console.log(newTuit);
 
-        expect(newTuit).toEqual(mockTuit);
-        //expect(newTuit.postedBy).toEqual(newUser._id);
+        expect(newTuit.tuit).toEqual(mockTuit.tuit);
+        expect(newTuit.postedBy).toEqual(newUser);
     });
-
 });
 
 describe('can delete tuit wtih REST API', () => {
-    // Create a Fake User
-    const markiplier = {
-        username: 'markiplier',
-        password: 'letsPlay',
-        email: 'mark@youtube.com'
-    };
-    //Create Fake Tuit
-    const markTuit = {
-        tuit: 'Ill see you! in the next video. BUHBYE',
-        postedBy: markiplier.username
-    };
 
     beforeAll(()=> {
-        return createTuit(markTuit);
+        return createTuit(mockTuit);
     });
 
     afterAll(()=>{
-        return deleteTuit(markTuit);
+        return deleteTuit(mockTuit);
     });
 
     test('can delete with REST API', async() => {
