@@ -20,6 +20,7 @@ const dummyUser = {
 
 //Create Fake Tuit
 const mockTuit = {
+    _id: "62184c059eb449f9c82c1ed1",
     tuit: "Here is an example tuit!",
     postedBy: ""
 };
@@ -27,85 +28,80 @@ const mockTuit = {
 let newUser = "";
 let newTuit = "";
 
-
+//Passed
 describe('can create tuit with REST API', () => {
 
-    //As mentioned in Piazza 307, create new tuit delete
-    beforeAll(()=> {
-        newUser = createUser(dummyUser);
-        mockTuit.postedBy = newUser;
-        //deleteTuitByText(mockTuit.tuit);
-        return(newUser);
-
+    //As mentioned in Piazza 307, mock tuit number or delete it
+    beforeAll(async ()=> {
+        //Insert user into DB
+        newUser = await createUser(dummyUser);
+        mockTuit.postedBy = newUser._id;
+        return(deleteTuit(mockTuit._id));
     });
+
     afterAll(()=>{
+        deleteTuit(mockTuit._id);
         return(deleteUsersByUsername('Pringles'));
-        //return deleteTuitByText(mockTuit.tuit);
     });
 
     test('can insert with REST API', async() => {
         //insert dummyTuit into Database
-        console.log(mockTuit);
         newTuit = await createTuit(mockTuit.postedBy, mockTuit);
-        console.log(newTuit);
 
         expect(newTuit.tuit).toEqual(mockTuit.tuit);
-        expect(newTuit.postedBy).toEqual(newUser);
+        expect(newTuit.postedBy).toEqual(newUser._id);
     });
 });
 
+//Passed
 describe('can delete tuit wtih REST API', () => {
 
-    beforeAll(()=> {
-        return createTuit(mockTuit);
+    beforeAll(async ()=> {
+        //Insert user into DB
+        newUser = await createUser(dummyUser);
+        mockTuit.postedBy = newUser._id;
+        //insert dummyTuit into Database
+        return(newTuit = await createTuit(mockTuit.postedBy, mockTuit));
     });
 
     afterAll(()=>{
+        deleteUsersByUsername('Pringles');
         return deleteTuit(mockTuit);
     });
 
     test('can delete with REST API', async() => {
-       const status = await
-       deleteTuit(markTuit);
+       const status = await deleteTuit(newTuit._id);
 
        expect(status.deletedCount).toBeGreaterThanOrEqual(1);
     });
 });
 
+//Test One, failed, brought back WHOLE user, not just ID
 describe('can retrieve a tuit by their primary key with REST API', () => {
-    // Create a Fake User
-    const osPod = {
-        username: 'Overly Sarcarstic Productions',
-        password: 'DomeOfFlorence',
-        email: 'osp@youtube.com'
-    };
-    //Create Fake Tuit
-    const ospTuit = {
-        tid: 567182,
-        tuit: 'Welcome to another episode of the Time Heist!',
-        postedBy: osPod.username
-    };
 
-    beforeAll(()=> {
-        return deleteTuit(ospTuit);
+    beforeAll(async ()=> {
+        newUser = await createUser(dummyUser);
+        return(mockTuit.postedBy = newUser._id);
     });
 
     afterAll(()=>{
-        return deleteTuit(ospTuit);
+        deleteUsersByUsername('Pringles');
+        return deleteTuit(mockTuit._id);
     });
 
     test('can find a tuit via ID with REST API', async() => {
-        const newTuit = await
-            createTuit(ospTuit);
+        //new tuit created with mockTuit.postedBy, which is made with newuser._id
+        newTuit = await createTuit(mockTuit.postedBy, mockTuit);
 
-        expect(newTuit.tid).toEqual(ospTuit.tid);
-        expect(newTuit.tuit).toEqual(ospTuit.tuid);
-        expect(newTuit.postedBy).toEqual(ospTuit.postedBy);
+        expect(newTuit._id).toEqual(mockTuit._id);
+        expect(newTuit.tuit).toEqual(mockTuit.tuit);
+        expect(newTuit.postedBy).toEqual(mockTuit.postedBy);
 
-        const existingTuit = await findTuitById(newTuit.tid);
+        const existingTuit = await findTuitById(newTuit._id);
+        console.log(existingTuit.postedBy);
 
-        expect(existingTuit.tuit).toEqual(ospTuit.tuit);
-        expect(existingTuit.postedBy).toEqual(ospTuit.postedBy);
+        expect(existingTuit.tuit).toEqual(newTuit.tuit);
+        expect(existingTuit.postedBy).toEqual(newTuit.postedBy);
     });
 });
 
@@ -117,11 +113,13 @@ describe('can retrieve all tuits with REST API', () => {
       'To search for the place I hear all sailors end'
   ];
 
-  beforeAll(()=>
+  beforeAll( async ()=>
+
+    newUser = await createUser(dummyUser)
     listOfTuits.map(tuit=>
     createTuit({
-      tuit,
-      postedBy: SeaShanty
+        postedBY: newUser._id,
+        tuit,
     })
     )
   );
@@ -145,8 +143,5 @@ describe('can retrieve all tuits with REST API', () => {
           expect(tuitExample.tuit).toEqual(tuit);
           expect(tuitExample.postedBy).toEqual(SeaShanty);
       })
-
   })
-
-
 });
