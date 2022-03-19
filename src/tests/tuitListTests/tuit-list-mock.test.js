@@ -14,9 +14,9 @@ const MOCKED_USERS = [
 ];
 
 const MOCKED_TUITS = [
-    {tuit: "alice's tuit", postedBy: ""},
-    {tuit: "bob's tuit", postedBy: ""},
-    {tuit: "charlie's tuit", postedBy:""}
+    {_id: "123", tuit: "alice's tuit", postedBy: ""},
+    {_id: "234", tuit: "bob's tuit", postedBy: ""},
+    {_id: "345", tuit: "charlie's tuit", postedBy:""}
 ];
 
 test('tuit list renders mocked', async () => {

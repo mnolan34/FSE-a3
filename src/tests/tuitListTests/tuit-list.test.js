@@ -23,9 +23,9 @@ const MOCKED_USERS = [
 ];
 
 const MOCKED_TUITS = [
-    {tuit: "alice's tuit", postedBy: ""},
-    {tuit: "bob's tuit", postedBy: ""},
-    {tuit: "charlie's tuit", postedBy:""}
+    {_id: "123", tuit: "alice's tuit", postedBy: ""},
+    {_id: "234", tuit: "bob's tuit", postedBy: ""},
+    {_id: "345", tuit: "charlie's tuit", postedBy:""}
 ];
 
 test('tuit list renders static tuit array', () => {
@@ -42,9 +42,9 @@ test('tuit list renders static tuit array', () => {
 test('tuit list renders async', async () => {
   const tuits = await findAllTuits();
   render(
-      <HashROuter>
-        <TuitList tuits = {tuits}/>
-      </HashROuter>
+      <HashRouter>
+        <Tuits tuits = {tuits}/>
+      </HashRouter>
   )
   const tuit = screen.getByText(/alice/i);
   expect(tuit).toBeInTheDocument();
