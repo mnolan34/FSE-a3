@@ -154,12 +154,12 @@ describe('can retrieve all tuits with REST API', () => {
       return(tuitThree = await createTuit(thirdTuit.postedBy, thirdTuit));
   });
 
-  afterAll(()=>
-    listOfTuits.map(tuit =>
-        deleteTuit(tuit._id)
-    )
-   return(deleteUsersByUsername('Pringles'));
-  );
+  afterAll(()=> {
+      listOfTuits.map(tuit =>
+          deleteTuit(tuit._id)
+      )
+      return (deleteUsersByUsername('Pringles'));
+  });
 
   test('retrieve all tuits from REST API', async () => {
 
